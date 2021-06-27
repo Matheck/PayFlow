@@ -1,11 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:payflow/modules/barcode_scanner/barcode_scanner_controller.dart';
 import 'package:payflow/modules/barcode_scanner/barcode_scannerstatus.dart';
 import 'package:payflow/shared/themes/app_colors.dart';
 import 'package:payflow/shared/themes/app_text_styles.dart';
 import 'package:payflow/shared/widgets/bottom_sheet/bottom_sheet_widget.dart';
-import 'package:payflow/shared/widgets/divider_vertical/divider_vertical_widget.dart';
-import 'package:payflow/shared/widgets/label_button/label_button.dart';
 import 'package:payflow/shared/widgets/set_label_buttons/set_label_buttons.dart';
 
 class BarcodeScannerPage extends StatefulWidget {
@@ -23,7 +22,8 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
     controller.getAvailableCameras();
     controller.statusNotifier.addListener(() {
       if (controller.status.hasBarcode) {
-        Navigator.pushReplacementNamed(context, "/insert_boleto");
+        Navigator.pushReplacementNamed(context, "/insert_boleto",
+            arguments: controller.status.barcode);
       }
     });
 
@@ -94,8 +94,8 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
                 ),
                 bottomNavigationBar: SetLabelButtons(
                   primaryLabel: "Inserir código do boleto",
-                  primaryOnPressed: () { 
-                    Navigator.pushReplacementNamed(context, "/insert_boleto");
+                  primaryOnPressed: () {
+                    controller.status = BarcodeScannerStatus.error("Error");
                   },
                   secondaryLabel: "Adicionar da galeria",
                   secondaryOnPressed: controller.scanWithImagePicker,
@@ -113,9 +113,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
                             controller.scanWithCamera();
                           },
                           secondaryLabel: "Digitar código",
-                          secondaryOnPressed: () {
-                            Navigator.pushReplacementNamed(context, "/insert_boleto");
-                          },
+                          secondaryOnPressed: () {},
                           title:
                               "Não foi possível identificar um código de barras.",
                           subtitle:
